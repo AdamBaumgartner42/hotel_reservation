@@ -1,7 +1,7 @@
 # hotel_reservation
-Udacity Java nanodegree project (1/3) 
 
 Hotel Reservation System
+Udacity Java nanodegree project (1/3) 
 
 --- User Scenarios ---
 * Creating a customer account: 
