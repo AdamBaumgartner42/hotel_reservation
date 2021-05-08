@@ -3,7 +3,7 @@ Udacity Java nanodegree project (1/3)
 
 Hotel Reservation System
 
-* --- User Scenarios --- *
+--- User Scenarios ---
 * Creating a customer account: 
   The user needs to first create a customer account 
   before they can make a reservation.
@@ -12,7 +12,7 @@ Hotel Reservation System
   The app should allow the user to search for available rooms
   based on provided check in and checkout dates. 
   
-  If the application has available rooms for the specified date
+ * If the application has available rooms for the specified date
   range, a list of the corresponding rooms will be displayed to
   the user for choosing.
   
@@ -25,14 +25,14 @@ Hotel Reservation System
   of all their reservations.
   
 
-* --- Admin Scenarios --- *
+--- Admin Scenarios ---
 * Displaying all customer accounts.
 * Viewing all the rooms in the hotel.
 * Viewing all the hotel reservations.
 * Adding a room to the hotel application
 
 
-* --- Reserving a Room - Requirements --- *
+--- Reserving a Room - Requirements ---
 * Avoid conflicting reservations: 
   A single room may only be reserved by a single customer per
   a check in and checkout date range. 
@@ -45,7 +45,7 @@ Hotel Reservation System
   dates to see if the hotel has any availabilities, and then
   display the recommended room/dates to the customer. 
   
-* --- Room requirements --- *
+--- Room requirements ---
 * Room Cost:
   Rooms will contain a price per night. When displaying rooms, 
   paid rooms will display the price per night and free rooms
@@ -60,7 +60,7 @@ Hotel Reservation System
   (Enumberation: SINGLE, DOUBLE).
   
 
-* --- Customer Requirements --- *
+--- Customer Requirements ---
   The Application will have customer accounts, 
   each account has,
   
