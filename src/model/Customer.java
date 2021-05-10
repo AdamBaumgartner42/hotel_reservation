@@ -9,8 +9,7 @@ public class Customer {
     protected String email;
 
     // Constructor
-    public Customer (String firstName, String lastName,
-                     String email){
+    public Customer (String firstName, String lastName, String email){
         // Guard Statement for email
         if(!Pattern.matches("^(.+)@(.+)\\.(.+)$", email)){
             throw new IllegalArgumentException("Invalid email for " + firstName + " " + lastName );

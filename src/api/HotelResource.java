@@ -1,13 +1,23 @@
 package api;
 
-import java.util.*
+import java.util.*;
 import model.*;
 
+
 public class HotelResource {
-    // Static Reference
+    /* --- HotelResource Class - Static Reference -- */
+    private static HotelResource hotelResourceInstance;
 
-    // end Static Reference
+    private HotelResource() {}
 
+    public static HotelResource getInstance(){
+        if (hotelResourceInstance == null){
+            hotelResourceInstance = new HotelResource();
+        }
+        return hotelResourceInstance;
+    }
+
+    /*
     public Customer getCustomer(String email){
 
     }
@@ -32,6 +42,8 @@ public class HotelResource {
     public Collection<IRoom> findARoom(Date checkIn, Date checkOut){
 
     }
+
+     */
 
 
 }

@@ -1,38 +1,51 @@
 package service;
 
 import model.Customer;
-
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
 
-public class CustomerService {
+public final class CustomerService {
+    /* --- CustomerService Class - Static Reference -- */
+    private static CustomerService customerServiceInstance;
 
-    // Eagerly Loading of singleton Instance
-    private static final CustomerService instance = new CustomerService();
+    private CustomerService() {}
 
-    // Private to prevent anyone else from instantiating
-    private CustomerService(){
-
-    }
-
-    // Not sure what this does
     public static CustomerService getInstance(){
-        return instance;
+        if (customerServiceInstance == null){
+            customerServiceInstance = new CustomerService();
+        }
+        return customerServiceInstance;
     }
 
-    public String getTestValue(){
-        return "Customer Service Test Value";
+    /* --- CUSTOMER_LIST - Static Reference --- */
+    static final Map<String, Customer> CUSTOMER_LIST;
+
+    static{
+        CUSTOMER_LIST = new HashMap<String, Customer>();
     }
 
-    // Class Methods
+    /* --- Class Methods --- */
     public void addCustomer(String email, String firstName, String lastName){
-
+        // Check that the email does not already exist.
+        if(CUSTOMER_LIST.get(email) != null){
+            throw new IllegalArgumentException("Email: " + email + " already exists");
+        }
+        // Add Customer to CUSTOMER_LIST
+        CUSTOMER_LIST.put(email, new Customer(firstName, lastName, email));
     }
 
     public Customer getCustomer (String customerEmail){
-
+        // Check that this is a valid email
+        return CUSTOMER_LIST.get(customerEmail);
     }
 
     public Collection<Customer> getAllCustomers(){
-
+        return CUSTOMER_LIST.values();
+        // Looks correct, but I don't quite understand what it means
     }
+
+
 }
+
+

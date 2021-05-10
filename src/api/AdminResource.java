@@ -4,10 +4,18 @@ import java.util.*;
 import model.*;
 
 public class AdminResource {
-    // Static reference
+    /* --- adminResource Class - Static Reference -- */
+    private static AdminResource adminResourceInstance;
 
-    // end Static reference
+    private AdminResource() {}
 
+    public static AdminResource getInstance(){
+        if (adminResourceInstance == null){
+            adminResourceInstance = new AdminResource();
+        }
+        return adminResourceInstance;
+    }
+/*
     public Customer getCustomer(String email){
 
     }
@@ -27,4 +35,6 @@ public class AdminResource {
     public void displayAllReservations(){
 
     }
+
+ */
 }
