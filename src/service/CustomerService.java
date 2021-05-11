@@ -1,16 +1,13 @@
 package service;
 
-import model.Customer;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
+import model.*;
+import java.util.*;
+import static api.CollectionResource.*;
 
 public final class CustomerService {
     /* --- CustomerService Class - Static Reference -- */
     private static CustomerService customerServiceInstance;
-
     private CustomerService() {}
-
     public static CustomerService getInstance(){
         if (customerServiceInstance == null){
             customerServiceInstance = new CustomerService();
@@ -18,31 +15,25 @@ public final class CustomerService {
         return customerServiceInstance;
     }
 
-    /* --- CUSTOMER_LIST - Static Reference --- */
-    static final Map<String, Customer> CUSTOMER_LIST;
-
-    static{
-        CUSTOMER_LIST = new HashMap<String, Customer>();
-    }
-
     /* --- Class Methods --- */
-    public void addCustomer(String email, String firstName, String lastName){
-        // Check that the email does not already exist.
-        if(CUSTOMER_LIST.get(email) != null){
-            throw new IllegalArgumentException("Email: " + email + " already exists");
-        }
-        // Add Customer to CUSTOMER_LIST
-        CUSTOMER_LIST.put(email, new Customer(firstName, lastName, email));
+    public void addCustomer(String firstName, String lastName, String email){
+        CUSTOMER_COLLECTION.add(new Customer(firstName, lastName, email));
     }
 
     public Customer getCustomer (String customerEmail){
-        // Check that this is a valid email
-        return CUSTOMER_LIST.get(customerEmail);
+        // Plan: Change to array list and do a for loop?
+        ArrayList<Customer> _CustomerArrayList = new ArrayList<>(CUSTOMER_COLLECTION);
+
+        for(int i = 0; i < _CustomerArrayList.size(); i++){
+            if(_CustomerArrayList.get(i).getEmail() == customerEmail){
+                return _CustomerArrayList.get(i);
+            }
+        }
+        return null;
     }
 
     public Collection<Customer> getAllCustomers(){
-        return CUSTOMER_LIST.values();
-        // Looks correct, but I don't quite understand what it means
+        return CUSTOMER_COLLECTION;
     }
 
 

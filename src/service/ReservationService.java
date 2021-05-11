@@ -4,6 +4,7 @@ import java.util.*;
 import model.IRoom;
 import model.Reservation;
 import model.Customer;
+import model.Room;
 
 public class ReservationService {
     /* --- ReservationService Class - Static Reference -- */
@@ -19,29 +20,29 @@ public class ReservationService {
     }
 
     /* --- ROOM_LIST - Static Reference --- */
-    static final Map<String, IRoom> ROOM_LIST;
+    static final List<IRoom> ROOM_LIST;
 
     static{
-        ROOM_LIST = new HashMap<String, IRoom>();
+        ROOM_LIST = new ArrayList<>();
     }
 
     /* --- RESERVATION_LIST - Static Reference --- */
-    static final Collection<Reservation> RESERVATION_LIST = null;
+    static final List<Reservation> RESERVATION_LIST;
 
     static{
-        RESERVATION_LIST = new Collection<Reservation>;
+        RESERVATION_LIST = new ArrayList<>();
     }
 
     /* --- Class Methods --- */
     public void addRoom(IRoom room){
-        // Add room to ROOM_LIST >?
-        //ROOM_LIST.put(// breakout of room info); >?
+        ROOM_LIST.add(room);
     }
 
-    public IRoom getARoom (String roomId){
-        //Check that this is a valid email
-        return ROOM_LIST.get(roomId);
-    }
+//    public IRoom getARoom (String roomId){
+//        //Check that this is a valid email
+//
+//
+//    }
 
     /*
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
@@ -57,11 +58,11 @@ public class ReservationService {
 
     }
 */
-    public Collection<Reservation> getCustomersReservation(Customer customer){
-        // Not isolated for single customer
-        // -> Change to hashmap(key: customer), then return only those values as collection?
-        return RESERVATION_LIST;
-    }
+//    public Collection<Reservation> getCustomersReservation(Customer customer){
+//        // Not isolated for single customer
+//        // -> Change to hashmap(key: customer), then return only those values as collection?
+//        return RESERVATION_LIST;
+//    }
 
     /*
     public void printAllReservation(){
