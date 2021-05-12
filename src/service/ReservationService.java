@@ -51,10 +51,8 @@ public class ReservationService {
         // For Loop to identify which rooms have interference with planned date
         for (int i = 0; i < _ReservationList.size(); i++){
             // Flag incorrect rooms:
-            if((checkInDate.before(_ReservationList.get(i).getCheckOutDate()) ||
-                checkInDate.equals(_ReservationList.get(i).getCheckOutDate())) &&
-                (checkOutDate.after(_ReservationList.get(i).getCheckInDate()) ||
-                checkOutDate.equals(_ReservationList.get(i).getCheckInDate())))
+            if(checkInDate.before(_ReservationList.get(i).getCheckOutDate()) &&
+                (checkOutDate.after(_ReservationList.get(i).getCheckInDate())))
             {
                 _BookedRooms.add(_ReservationList.get(i).getRoom());
             }
