@@ -4,7 +4,7 @@ import model.*;
 import java.util.*;
 import static api.CollectionResource.*;
 
-public final class CustomerService {
+public class CustomerService {
     /* --- CustomerService Class - Static Reference -- */
     private static CustomerService customerServiceInstance;
     private CustomerService() {}

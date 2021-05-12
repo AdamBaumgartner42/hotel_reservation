@@ -18,6 +18,22 @@ public class Reservation {
         this.checkOutDate = checkOutDate;
     }
 
+    public Customer getCustomer(){
+        return customer;
+    }
+
+    public Date getCheckInDate(){
+        return checkInDate;
+    }
+
+    public Date getCheckOutDate(){
+        return checkOutDate;
+    }
+
+    public IRoom getRoom(){
+        return room;
+    }
+
     @Override
     public String toString() {
         return "customer: " + customer +

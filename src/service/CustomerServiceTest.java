@@ -5,8 +5,6 @@ import model.Customer;
 
 import java.util.ArrayList;
 
-import static api.CollectionResource.CUSTOMER_COLLECTION;
-
 public class CustomerServiceTest {
 
     public static void main(String[] args){

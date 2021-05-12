@@ -24,6 +24,4 @@ public class CollectionResource {
         IROOM_COLLECTION = new ArrayList<>();
     }
 
-    // IRoom list will be defined in Admin Resource as a local change
-
 }

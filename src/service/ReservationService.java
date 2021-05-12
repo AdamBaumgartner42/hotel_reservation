@@ -6,12 +6,12 @@ import model.Reservation;
 import model.Customer;
 import model.Room;
 
+import static api.CollectionResource.*;
+
 public class ReservationService {
     /* --- ReservationService Class - Static Reference -- */
     private static ReservationService reservationServiceInstance;
-
     private ReservationService() {}
-
     public static ReservationService getInstance(){
         if (reservationServiceInstance == null){
             reservationServiceInstance = new ReservationService();
@@ -19,56 +19,78 @@ public class ReservationService {
         return reservationServiceInstance;
     }
 
-    /* --- ROOM_LIST - Static Reference --- */
-    static final List<IRoom> ROOM_LIST;
-
-    static{
-        ROOM_LIST = new ArrayList<>();
-    }
-
-    /* --- RESERVATION_LIST - Static Reference --- */
-    static final List<Reservation> RESERVATION_LIST;
-
-    static{
-        RESERVATION_LIST = new ArrayList<>();
-    }
-
     /* --- Class Methods --- */
     public void addRoom(IRoom room){
-        ROOM_LIST.add(room);
+        IROOM_COLLECTION.add(room);
     }
 
-//    public IRoom getARoom (String roomId){
-//        //Check that this is a valid email
-//
-//
-//    }
+    public IRoom getARoom (String roomNumber){
+        ArrayList<IRoom> _IRoomArrayList = new ArrayList<>(IROOM_COLLECTION);
 
-    /*
+        for(int i = 0; i < _IRoomArrayList.size(); i++){
+            if(_IRoomArrayList.get(i).getRoomNumber().equals(roomNumber)){
+                return _IRoomArrayList.get(i);
+            }
+        }
+
+        return null;
+    }
+
     public Reservation reserveARoom(Customer customer, IRoom room, Date checkInDate, Date checkOutDate){
-        // need a place to store reservations
-        //return RESERVATION_LIST
-
+        Reservation _newReservation = new Reservation(customer, room, checkInDate, checkOutDate);
+        RESERVATION_COLLECTION.add(_newReservation);
+        return _newReservation;
     }
 
-     */
-
-/*
     public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
+        // Array init
+        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
+        ArrayList<IRoom> _AvailableRoomList = new ArrayList<>(IROOM_COLLECTION);
+        ArrayList<IRoom> _BookedRooms = new ArrayList<>();
 
+        // For Loop to identify which rooms have interference with planned date
+        for (int i = 0; i < _ReservationList.size(); i++){
+            // Flag incorrect rooms:
+            if((checkInDate.before(_ReservationList.get(i).getCheckOutDate()) ||
+                checkInDate.equals(_ReservationList.get(i).getCheckOutDate())) &&
+                (checkOutDate.after(_ReservationList.get(i).getCheckInDate()) ||
+                checkOutDate.equals(_ReservationList.get(i).getCheckInDate())))
+            {
+                _BookedRooms.add(_ReservationList.get(i).getRoom());
+            }
+        }
+
+        // For Loop to remove those _BookedRooms from the list of all Rooms
+        for(int i = 0; i < _BookedRooms.size(); i++){
+            if(_AvailableRoomList.contains(_BookedRooms.get(i))){
+                _AvailableRoomList.remove(_BookedRooms.get(i));
+            }
+        }
+
+        return _AvailableRoomList;
     }
-*/
-//    public Collection<Reservation> getCustomersReservation(Customer customer){
-//        // Not isolated for single customer
-//        // -> Change to hashmap(key: customer), then return only those values as collection?
-//        return RESERVATION_LIST;
-//    }
 
-    /*
+    public Collection<Reservation> getCustomersReservation(Customer customer){
+        Collection<Reservation> _CustomerReservationCollection = new ArrayList<>();
+
+        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
+
+        for(int i = 0; i < _ReservationList.size(); i++){
+            if(_ReservationList.get(i).getCustomer() == customer){
+                _CustomerReservationCollection.add(_ReservationList.get(i));
+            }
+        }
+        return _CustomerReservationCollection;
+    }
+
+
     public void printAllReservation(){
+        // Print the collection of all reservations
+        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
 
+        for(int i = 0; i < _ReservationList.size(); i++){
+            System.out.println(_ReservationList.get(i));
+        }
     }
-
- */
 
 }

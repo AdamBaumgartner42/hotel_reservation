@@ -31,7 +31,7 @@ public class Room implements IRoom {
     }
 
     @Override
-    public boolean isFree() {
+    public boolean isAvailable() {
         return false;
     }
 
