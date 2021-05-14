@@ -1,11 +1,7 @@
 package service;
 
 import java.util.*;
-import model.IRoom;
-import model.Reservation;
-import model.Customer;
-import model.Room;
-
+import model.*;
 import static api.CollectionResource.*;
 
 public class ReservationService {
@@ -83,12 +79,15 @@ public class ReservationService {
 
 
     public void printAllReservation(){
-        // Print the collection of all reservations
         ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
 
         for(int i = 0; i < _ReservationList.size(); i++){
             System.out.println(_ReservationList.get(i));
         }
+    }
+
+    public Collection<IRoom> getAllRooms(){
+        return IROOM_COLLECTION;
     }
 
 }
