@@ -50,4 +50,8 @@ public class AdminResource {
 
     }
 
+    public String testAdminResource(){
+        return "Hello World";
+    }
+
 }

@@ -66,16 +66,31 @@ public class AdminMenu {
         System.out.println("Enter room type: Single / Double");
         //String roomType = scanner.nextLine(); // missing enum specifically
         RoomType roomType = RoomType.SINGLE;
+
+
+
+        // I don't think this is actually updating Room List
+        // Based on test with seeAllRooms().
         List<IRoom> roomList = new ArrayList<>();
         roomList.add(new Room(roomNumber, roomPrice, roomType));
+
+        // Add to actual collection
+        AdminResource adminResource = AdminResource.getInstance();
+        adminResource.addRoom(roomList);
+
+        // temp
+        // print the current list of rooms.
     }
 
     public void seeAllRooms(){
+        // Waiting on update for addARoom to actually update IROOM_COLLECTION
         // Loop over the Collection<IRoom>
         AdminResource adminResource = AdminResource.getInstance();
 
+        System.out.println(adminResource.testAdminResource());
+
         for(IRoom room: adminResource.getAllRooms()){
-            System.out.println(room.getRoomNumber());
+            System.out.println();
         }
     }
 

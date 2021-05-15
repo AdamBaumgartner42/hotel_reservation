@@ -20,6 +20,10 @@ public class ReservationService {
         IROOM_COLLECTION.add(room);
     }
 
+    public Collection<IRoom> getAllRooms(){
+        return IROOM_COLLECTION;
+    }
+
     public IRoom getARoom (String roomNumber){
         ArrayList<IRoom> _IRoomArrayList = new ArrayList<>(IROOM_COLLECTION);
 
@@ -84,10 +88,6 @@ public class ReservationService {
         for(int i = 0; i < _ReservationList.size(); i++){
             System.out.println(_ReservationList.get(i));
         }
-    }
-
-    public Collection<IRoom> getAllRooms(){
-        return IROOM_COLLECTION;
     }
 
 }
