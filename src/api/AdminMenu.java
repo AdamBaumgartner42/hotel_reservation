@@ -22,14 +22,16 @@ public class AdminMenu {
             int action = getAction();
             switch (action) {
                 case 1:
+                    seeAllCustomers();
                     break;
                 case 2:
-                    seeAllRooms();
+                    seeAllRooms(); // OK
                     break;
                 case 3:
+                    seeAllReservations();
                     break;
                 case 4:
-                    addARoom();
+                    addARoom(); // OK
                     break;
                 case 5:
                     mainMenu();
@@ -56,6 +58,41 @@ public class AdminMenu {
         return Integer.parseInt(scanner.nextLine());
     }
 
+// See all Customers
+    public void seeAllCustomers(){
+        AdminResource ar = AdminResource.getInstance();
+        Collection<Customer> _customerList = ar.getAllCustomers();
+        Iterator<Customer> iterator = _customerList.iterator();
+
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+
+// See all Reservations
+    public void seeAllReservations(){
+        AdminResource ar = AdminResource.getInstance();
+        Collection<Reservation> _reservationList = ar.getAllReservations();
+        Iterator<Reservation> iterator = _reservationList.iterator();
+
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+
+
+// See all Rooms
+    public void seeAllRooms(){
+        AdminResource ar = AdminResource.getInstance();
+        Collection<IRoom> temp = ar.getAllRooms();
+        Iterator<IRoom> iterator = temp.iterator();
+
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+    }
+
+// Add a Room
     public void addARoom(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Add a room");
@@ -63,41 +100,41 @@ public class AdminMenu {
         String roomNumber = scanner.nextLine();
         System.out.println("Enter room price");
         Double roomPrice = Double.parseDouble(scanner.nextLine());
-        System.out.println("Enter room type: Single / Double");
-        //String roomType = scanner.nextLine(); // missing enum specifically
-        RoomType roomType = RoomType.SINGLE;
+        System.out.println("Enter room type: Single (1) / Double (2)");
+        int roomTypeInput = Integer.parseInt(scanner.nextLine()); // missing enum specifically
+        RoomType roomType = null;
+        if (roomTypeInput == 1){
+            roomType = RoomType.SINGLE;
+        } else if (roomTypeInput == 2){
+            roomType = RoomType.DOUBLE;
+        } else {
+            System.out.println("unrecognized room type");
+        }
 
-
-
-        // I don't think this is actually updating Room List
-        // Based on test with seeAllRooms().
+        // Create List<IRoom> for AdminResource function
+        // public void addRoom(List<IRoom> rooms){ ... }
         List<IRoom> roomList = new ArrayList<>();
-        roomList.add(new Room(roomNumber, roomPrice, roomType));
+        IRoom tempRoom = new Room(roomNumber, roomPrice, roomType);
+        roomList.add(tempRoom);
 
         // Add to actual collection
         AdminResource adminResource = AdminResource.getInstance();
         adminResource.addRoom(roomList);
 
-        // temp
-        // print the current list of rooms.
     }
 
-    public void seeAllRooms(){
-        // Waiting on update for addARoom to actually update IROOM_COLLECTION
-        // Loop over the Collection<IRoom>
-        AdminResource adminResource = AdminResource.getInstance();
+// Add Test Data
 
-        System.out.println(adminResource.testAdminResource());
 
-        for(IRoom room: adminResource.getAllRooms()){
-            System.out.println();
-        }
-    }
 
+// Back to Main Menu
     public void mainMenu(){
         MainMenu mainMenu = new MainMenu();
         mainMenu.startActions();
     }
+
+
+
 
 }
 

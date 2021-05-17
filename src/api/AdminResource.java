@@ -44,11 +44,11 @@ public class AdminResource {
 
     }
 
-    public void displayAllReservations(){
+    public Collection<Reservation> getAllReservations(){
 
-        reservationService.printAllReservation();
-
+        return reservationService.getAllReservations();
     }
+
 
     public String testAdminResource(){
         return "Hello World";

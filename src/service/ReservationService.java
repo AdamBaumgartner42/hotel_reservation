@@ -17,10 +17,12 @@ public class ReservationService {
 
     /* --- Class Methods --- */
     public void addRoom(IRoom room){
+
         IROOM_COLLECTION.add(room);
     }
 
     public Collection<IRoom> getAllRooms(){
+
         return IROOM_COLLECTION;
     }
 
@@ -88,6 +90,10 @@ public class ReservationService {
         for(int i = 0; i < _ReservationList.size(); i++){
             System.out.println(_ReservationList.get(i));
         }
+    }
+
+    public Collection<Reservation> getAllReservations(){
+        return RESERVATION_COLLECTION;
     }
 
 }
