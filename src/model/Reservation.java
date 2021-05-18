@@ -1,5 +1,6 @@
 package model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class Reservation {
@@ -22,9 +23,7 @@ public class Reservation {
         return customer;
     }
 
-    public Date getCheckInDate(){
-        return checkInDate;
-    }
+    public Date getCheckInDate(){ return checkInDate;}
 
     public Date getCheckOutDate(){
         return checkOutDate;
@@ -36,9 +35,15 @@ public class Reservation {
 
     @Override
     public String toString() {
-        return "customer: " + customer +
-                "\nroom: " + room +
-                "\ncheck in: " + checkInDate +
-                "\ncheck out: " + checkOutDate;
+
+        SimpleDateFormat dateFormat = new SimpleDateFormat("EEE MMM d yyyy");
+
+        return "Reservation\n"
+                + customer.getFirstName()
+                + " " + customer.getLastName() + "\n"
+                + "Room: " + room.getRoomNumber() + " - " + room.getRoomTypeText() + "\n"
+                + "Price: " + "$" + room.getRoomPrice() + " price per night \n"
+                + "CheckIn Date: " + dateFormat.format(checkInDate) + "\n"
+                + "CheckOut Date: " + dateFormat.format(checkOutDate);
     }
 }

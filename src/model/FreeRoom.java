@@ -9,8 +9,14 @@ public class FreeRoom extends Room{
 
     @Override
     public String toString() {
-        return "Room number: " + roomNumber +
-                "\nRoom price: " + price +
-                "\nRoomType: " + enumeration + " *Free Room* ";
+        String roomTypeMsg = null;
+        if (enumeration.equals(RoomType.SINGLE)){
+            roomTypeMsg = "Single Bed";
+        } else {
+            roomTypeMsg = "Double Bed";
+        }
+        return " Room number: " + roomNumber +
+                ", RoomType: " + roomTypeMsg +
+                ", Room price: $" + price;
     }
 }

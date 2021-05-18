@@ -3,6 +3,8 @@ package api;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.regex.Pattern;
+
 import model.*;
 
 
@@ -23,30 +25,96 @@ public class MainMenu {
         boolean keepRunning = true;
         while (keepRunning){
             splashScreen();
-            int action = getAction();
+
+            String actionString = null;
+            int action = 0;
+            boolean validInput = false;
+            while (!validInput){
+                actionString = getActionString();
+                validInput = checkGetAction(actionString, 1, 5);
+                if(validInput){
+                    action = Integer.parseInt(actionString);
+                }
+            }
             switch (action) {
                 case 1 -> {
                     // HotelResource instance
                     HotelResource hr = HotelResource.getInstance();
 
-                    // Customer
-                    System.out.println("Please enter your account email");
-                    String customerEmail = getScannerEmail();
+                    Date checkInDate = null;
+                    Date checkOutDate = null;
 
-                    // Get check in and check out dates
-                    System.out.println("Check in Date: dd/MM/yyyy");
-                    Date checkInDate = getScannerDate();
-                    System.out.println("Check out Date: dd/MM/yyyy");
-                    Date checkOutDate = getScannerDate();
+                    // Find Available Rooms
+                    validInput = false;
+                    while(!validInput){
+                        checkInDate = requestCheckInDate();
+                        validInput = checkCheckInDate(checkInDate);
+                    }
 
-                    // See all available rooms
-                    Collection<IRoom> _openRooms = hr.findARoom(checkInDate, checkOutDate);
+                    validInput = false;
+                    while(!validInput){
+                        checkOutDate = requestCheckOutDate();
+                        validInput = checkCheckOutDate(checkInDate, checkOutDate);
+                    }
 
                     // Display available rooms
+                    Collection<IRoom> _openRooms = hr.findARoom(checkInDate, checkOutDate);
                     System.out.println("Available Rooms:");
                     for (IRoom openRoom : _openRooms) {
-                        System.out.println(openRoom.getRoomNumber());
+                        System.out.println(openRoom);
                     }
+                    if(_openRooms.size() == 0) {
+                        System.out.println("no rooms in original range");
+                        // Try again with +7 days
+                        Calendar cal = Calendar.getInstance();
+
+                        // Update checkInDate
+                        cal.setTime(checkInDate);
+                        cal.add(Calendar.DATE, 7);
+                        checkInDate = cal.getTime();
+
+                        // Update checkOutDate
+                        cal.setTime(checkOutDate);
+                        cal.add(Calendar.DATE, 7);
+                        checkOutDate = cal.getTime();
+
+                        _openRooms = hr.findARoom(checkInDate, checkOutDate);
+                        System.out.println("Available Rooms + 7 days:");
+                        for (IRoom openRoom : _openRooms) {
+                            System.out.println(openRoom);
+                        }
+                        if (_openRooms.size() == 0) {
+                            System.out.println("no rooms in +7 day range");
+                            startActions(); // exit back to main menu
+                        }
+                    }
+
+
+
+
+                    // Book a room - y/n
+                    validInput = false;
+                    while(!validInput){
+                        String res = requestBookRoomResponse();
+                        validInput = checkRequestBookRoomResponse(res);
+                        if((res.equals("n") || res.equals("N")) && validInput){
+                            startActions(); // go back to MainMenu()
+                        }
+                    }
+
+                    // Existing account - y/n
+                    validInput = false;
+                    while(!validInput){
+                        String res = requestCurrentAccount();
+                        validInput = checkRequestCurrentAccount(res);
+                        if((res.equals("n") || res.equals("N")) && validInput){
+                            createAccount();
+                        }
+                    }
+
+                    // Customer
+                    System.out.println("Please enter your account email"); // repetitive for new acct folks
+                    String customerEmail = getScannerEmail();
 
                     // Get book requested room
                     System.out.println("Which room would you like?");
@@ -54,7 +122,6 @@ public class MainMenu {
 
                     // Book reservation
                     Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
-                    System.out.println("Your reservation is complete");
                     System.out.println(_newReservation);
                 }
                 case 2 -> {
@@ -80,10 +147,23 @@ public class MainMenu {
                 + "Please select a number for the menu option");
     }
 
-    public int getAction(){
+    public String getActionString(){
         Scanner scanner = new Scanner(System.in);
-        return Integer.parseInt(scanner.nextLine());
+        return scanner.nextLine();
     }
+
+    public boolean checkGetAction(String action, int low, int high){
+        if(action.equals("1") || action.equals("2") || action.equals("3") ||
+            action.equals("4") || action.equals("5")) {
+
+            return true;
+
+        } else {
+            System.out.println("Invalid Input: Must be between " + low + " and " + high);
+            return false;
+        }
+    }
+
 
 // Find a room   // Book a room
     public Date getScannerDate(){
@@ -92,7 +172,7 @@ public class MainMenu {
 
         Date checkInDate;
         try {
-            checkInDate = new SimpleDateFormat("dd/MM/yyyy").parse(input);
+            checkInDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
         } catch (ParseException ex){
             System.out.println("Incorrect Date Format");
             checkInDate = null;
@@ -129,20 +209,160 @@ public class MainMenu {
     }
 
     public void createAccount(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Create a Customer");
+        String email = null;
+        String firstName = null;
+        String lastName = null;
 
-        System.out.println("Please enter first name");
-        String firstName = scanner.nextLine();
+        // Email
+        boolean inputValid = false;
+        while (!inputValid){
+            email = requestEmail();
+            inputValid = checkEmail(email);
+        }
 
-        System.out.println("Please enter last name");
-        String lastName = scanner.nextLine();
+        // First Name
+        inputValid = false;
+        while (!inputValid){
+            firstName = requestFirstName();
+            inputValid = checkFirstName(firstName);
+        }
 
-        System.out.println("Please enter email");
-        String email = scanner.nextLine();
+        // Last Name
+        inputValid = false;
+        while (!inputValid){
+            lastName = requestLastName();
+            inputValid = checkLastName(lastName);
+        }
 
         HotelResource hs = HotelResource.getInstance();
         hs.createACustomer(email, firstName, lastName);
+    }
+
+    // Book room response
+    public String requestBookRoomResponse(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Would you like to book a room y/n");
+        return scanner.nextLine();
+    }
+
+    public boolean checkRequestBookRoomResponse(String response){
+        if(response.equals("y") || response.equals("Y") ||
+           response.equals("n") || response.equals("N")){
+            return true;
+        } else {
+            System.out.println("Options are y or n");
+            return false;
+        }
+    }
+
+    // Existing Account response
+    public String requestCurrentAccount(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Do you have an account with us? y/n");
+        return scanner.nextLine();
+    }
+
+    public boolean checkRequestCurrentAccount (String response){
+        if(response.equals("y") || response.equals("Y") ||
+                response.equals("n") || response.equals("N")){
+            return true;
+        } else {
+            System.out.println("Options are y or n");
+            return false;
+        }
+    }
+
+
+
+
+// CheckIn Date
+    public Date requestCheckInDate(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter CheckIn Date mm/dd/yyyy example 02/01/2020");
+        return getScannerDate();
+    }
+
+    public boolean checkCheckInDate(Date checkInDate){
+        if(checkInDate.before(new java.util.Date())){
+            System.out.println(checkInDate + " is already in the past");
+            return false;
+        }
+        return true;
+    }
+
+// CheckOut Date
+    public Date requestCheckOutDate(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter CheckOut Date mm/dd/yyyy example 02/21/2020");
+        return getScannerDate();
+    }
+
+    public boolean checkCheckOutDate(Date checkInDate, Date checkOutDate){
+        if(checkOutDate.before(checkInDate)){
+            System.out.println("CheckOut Date must be after CheckIn Date: " + checkInDate);
+            return false;
+        }
+        return true;
+    }
+
+
+
+// Email
+    public String requestEmail(){
+        System.out.println("Enter Email format: name@domain.com");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    public boolean checkEmail(String email){
+        if(Pattern.matches("^(.+)@(.+)\\.(.+)$", email)){
+            return true;
+        } else {
+            System.out.println(email + " is incorrect. format: name@domain.com");
+            return false;
+        }
+    }
+
+    // Check for Email in service
+
+
+
+// First Name
+    public String requestFirstName(){
+        System.out.println("First Name");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    public boolean checkFirstName(String firstName){
+        if(firstName.length() == 0 ){
+            System.out.println("First Name input cannot be blank");
+            return false;
+        } else if (firstName.length() > 30){
+            System.out.println("First Name must be <= 30 chars");
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+// Last Name
+    public String requestLastName(){
+        System.out.println("Last Name");
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    public boolean checkLastName(String lastName){
+        if(lastName.length() == 0 ){
+            System.out.println("Last Name input cannot be blank");
+            return false;
+        } else if (lastName.length() > 30){
+            System.out.println("Last Name must be <= 30 chars");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     public void adminMenu(){

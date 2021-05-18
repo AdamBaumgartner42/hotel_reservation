@@ -21,12 +21,10 @@ public class CustomerService {
     }
 
     public Customer getCustomer (String customerEmail){
-        // Plan: Change to array list and do a for loop?
         ArrayList<Customer> _CustomerArrayList = new ArrayList<>(CUSTOMER_COLLECTION);
 
         for(int i = 0; i < _CustomerArrayList.size(); i++){
-            if(_CustomerArrayList.get(i).getEmail() == customerEmail){
-                //System.out.println("Match" + customerEmail);
+            if(_CustomerArrayList.get(i).getEmail().equals(customerEmail)){
                 return _CustomerArrayList.get(i);
             }
         }

@@ -26,8 +26,19 @@ public class Room implements IRoom {
     }
 
     @Override
-    public RoomType getRoomtype() {
+    public RoomType getRoomType() {
         return enumeration;
+    }
+
+    @Override
+    public String getRoomTypeText(){
+        String roomTypeMsg = null;
+        if (enumeration.equals(RoomType.SINGLE)){
+            roomTypeMsg = "Single Bed";
+        } else {
+            roomTypeMsg = "Double Bed";
+        }
+        return roomTypeMsg;
     }
 
     @Override
@@ -37,8 +48,15 @@ public class Room implements IRoom {
 
     @Override
     public String toString() {
-        return "Room number: " + roomNumber +
-                "\nRoom price: " + price +
-                "\nRoomType: " + enumeration;
+
+        String roomTypeMsg = null;
+        if (enumeration.equals(RoomType.SINGLE)){
+            roomTypeMsg = "Single Bed";
+        } else {
+            roomTypeMsg = "Double Bed";
+        }
+        return " Room number: " + roomNumber +
+                ", RoomType: " + roomTypeMsg +
+                ", Room price: $" + price ;
     }
 }

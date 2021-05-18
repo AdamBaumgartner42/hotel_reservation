@@ -20,7 +20,16 @@ public class AdminMenu {
         boolean keepRunning = true;
         while(keepRunning){
             splashScreen();
-            int action = getAction();
+            String actionString = null;
+            int action = 0;
+            boolean validInput = false;
+            while (!validInput){
+                actionString = getActionString();
+                validInput = checkGetAction(actionString, 1, 6);
+                if(validInput){
+                    action = Integer.parseInt(actionString);
+                }
+            }
             switch (action) {
                 case 1 -> seeAllCustomers();
                 case 2 -> seeAllRooms();
@@ -52,9 +61,24 @@ public class AdminMenu {
                 + "Please select a number for the menu option");
     }
 
-    public int getAction(){
+//    public int getAction(){
+//        Scanner scanner = new Scanner(System.in);
+//        return Integer.parseInt(scanner.nextLine());
+//    }
+
+    public String getActionString(){
         Scanner scanner = new Scanner(System.in);
-        return Integer.parseInt(scanner.nextLine());
+        return scanner.nextLine();
+    }
+
+    public boolean checkGetAction(String action, int low, int high){
+        if(action.equals("1") || action.equals("2") || action.equals("3") ||
+                action.equals("4") || action.equals("5") || action.equals("6")) {
+            return true;
+        } else {
+            System.out.println("Invalid Input: Must be between " + low + " and " + high);
+            return false;
+        }
     }
 
 // See all Customers
@@ -64,7 +88,7 @@ public class AdminMenu {
 
         Iterator<Customer> iterator = _customerList.iterator();
         while (iterator.hasNext()){
-            System.out.println(iterator.next() + "\n");
+            System.out.println(iterator.next());
         }
     }
 
@@ -87,7 +111,7 @@ public class AdminMenu {
         Iterator<IRoom> iterator = temp.iterator();
 
         while (iterator.hasNext()){
-            System.out.println(iterator.next() + "\n");
+            System.out.println(iterator.next());
         }
     }
 

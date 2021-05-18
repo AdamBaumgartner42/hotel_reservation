@@ -6,7 +6,9 @@ public interface IRoom {
 
     public Double getRoomPrice();
 
-    public RoomType getRoomtype();
+    public RoomType getRoomType();
+
+    public String getRoomTypeText();
 
     public boolean isAvailable();
 }
