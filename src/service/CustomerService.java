@@ -26,6 +26,7 @@ public class CustomerService {
 
         for(int i = 0; i < _CustomerArrayList.size(); i++){
             if(_CustomerArrayList.get(i).getEmail() == customerEmail){
+                //System.out.println("Match" + customerEmail);
                 return _CustomerArrayList.get(i);
             }
         }

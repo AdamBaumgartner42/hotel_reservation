@@ -45,6 +45,7 @@ public class HotelResource {
     public Collection<Reservation> getCustomersReservations(String customerEmail){
 
         Customer _customer = customerService.getCustomer(customerEmail);
+        // Is the object showing up here properly
         return reservationService.getCustomersReservation(_customer);
     }
 

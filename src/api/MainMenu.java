@@ -1,5 +1,7 @@
 package api;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 import model.*;
 
@@ -18,38 +20,64 @@ public class MainMenu {
     public MainMenu(){}
 
     public void startActions(){
-        splashScreen();
         boolean keepRunning = true;
         while (keepRunning){
             splashScreen();
             int action = getAction();
             switch (action) {
-                case 1:
-                    break;
-                case 2:
-                    break;
-                case 3:
-                    createAccount();
-                    break;
-                case 4:
-                    adminMenu();
-                    break;
-                case 5:
-                    exitMenu();
-                    break;
+                case 1 -> {
+                    // HotelResource instance
+                    HotelResource hr = HotelResource.getInstance();
+
+                    // Customer
+                    System.out.println("Please enter your account email");
+                    String customerEmail = getScannerEmail();
+
+                    // Get check in and check out dates
+                    System.out.println("Check in Date: dd/MM/yyyy");
+                    Date checkInDate = getScannerDate();
+                    System.out.println("Check out Date: dd/MM/yyyy");
+                    Date checkOutDate = getScannerDate();
+
+                    // See all available rooms
+                    Collection<IRoom> _openRooms = hr.findARoom(checkInDate, checkOutDate);
+
+                    // Display available rooms
+                    System.out.println("Available Rooms:");
+                    for (IRoom openRoom : _openRooms) {
+                        System.out.println(openRoom.getRoomNumber());
+                    }
+
+                    // Get book requested room
+                    System.out.println("Which room would you like?");
+                    String roomNumber = getScannerRoom();
+
+                    // Book reservation
+                    Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
+                    System.out.println("Your reservation is complete");
+                    System.out.println(_newReservation);
+                }
+                case 2 -> {
+                    System.out.println("Enter customer email to search for reservations");
+                    viewCustomerReservations(getScannerEmail());
+                }
+                case 3 -> createAccount();
+                case 4 -> adminMenu();
+                case 5 -> exitMenu();
             }
         }
     }
 
     public void splashScreen(){
-        System.out.println(" Main Menu \n"
-                + "----------- \n"
+        System.out.println(
+                "--------------------------------- \n"
                 + "1. Find and reserve a rooms \n"
                 + "2. See my reservations \n"
                 + "3. Create an account\n"
                 + "4. Admin \n"
                 + "5. Exit \n"
-                + "-----------");
+                + "--------------------------------- \n"
+                + "Please select a number for the menu option");
     }
 
     public int getAction(){
@@ -57,15 +85,49 @@ public class MainMenu {
         return Integer.parseInt(scanner.nextLine());
     }
 
-/*
-    public void findAndBookRoom(){
+// Find a room   // Book a room
+    public Date getScannerDate(){
+        Scanner scanner = new Scanner(System.in);
+        String input = scanner.nextLine();
+
+        Date checkInDate;
+        try {
+            checkInDate = new SimpleDateFormat("dd/MM/yyyy").parse(input);
+        } catch (ParseException ex){
+            System.out.println("Incorrect Date Format");
+            checkInDate = null;
+        }
+
+        return checkInDate;
+    }
+
+    public String getScannerRoom(){
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+    public String getScannerEmail(){
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
+
+
+
+// Viewing Reservations
+
+    public Collection<Reservation> viewCustomerReservations(String customerEmail){
+        HotelResource hs = HotelResource.getInstance();
+        Collection<Reservation> personReservations = hs.getCustomersReservations(customerEmail);
+
+        Iterator <Reservation> iterator = personReservations.iterator();
+        while (iterator.hasNext()){
+            System.out.println(iterator.next());
+        }
+
+        return personReservations;
 
     }
 
-    public Collection<Reservation> customerReservations(){
-
-    }
-*/
     public void createAccount(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Create a Customer");
