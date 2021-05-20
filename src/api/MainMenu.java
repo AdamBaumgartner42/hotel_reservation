@@ -90,8 +90,6 @@ public class MainMenu {
                     }
 
 
-
-
                     // Book a room - y/n
                     validInput = false;
                     while(!validInput){
@@ -102,23 +100,33 @@ public class MainMenu {
                         }
                     }
 
+                    // Variables
+                    String customerEmail = null;
+                    String roomNumber = null;
+
+
                     // Existing account - y/n
                     validInput = false;
                     while(!validInput){
                         String res = requestCurrentAccount();
                         validInput = checkRequestCurrentAccount(res);
+                            // No: Customer account Does Not Exist
                         if((res.equals("n") || res.equals("N")) && validInput){
-                            createAccount();
+                            customerEmail = createAccountReturnEmail(); // probably could use inheritance
+                        } else {
+                            // Yes: Customer account already Exists
+                            System.out.println("Please enter your account email"); // repetitive for new acct folks
+                            customerEmail = getScannerEmail();
                         }
                     }
 
-                    // Customer
-                    System.out.println("Please enter your account email"); // repetitive for new acct folks
-                    String customerEmail = getScannerEmail();
+//                    // Customer Email Request
+//                    System.out.println("Please enter your account email"); // repetitive for new acct folks
+//                    customerEmail = getScannerEmail();
 
                     // Get book requested room
                     System.out.println("Which room would you like?");
-                    String roomNumber = getScannerRoom();
+                    roomNumber = getScannerRoom();
 
                     // Book reservation
                     Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
@@ -236,6 +244,38 @@ public class MainMenu {
 
         HotelResource hs = HotelResource.getInstance();
         hs.createACustomer(email, firstName, lastName);
+    }
+
+    public String createAccountReturnEmail(){
+        String email = null;
+        String firstName = null;
+        String lastName = null;
+
+        // Email
+        boolean inputValid = false;
+        while (!inputValid){
+            email = requestEmail();
+            inputValid = checkEmail(email);
+        }
+
+        // First Name
+        inputValid = false;
+        while (!inputValid){
+            firstName = requestFirstName();
+            inputValid = checkFirstName(firstName);
+        }
+
+        // Last Name
+        inputValid = false;
+        while (!inputValid){
+            lastName = requestLastName();
+            inputValid = checkLastName(lastName);
+        }
+
+        HotelResource hs = HotelResource.getInstance();
+        hs.createACustomer(email, firstName, lastName);
+
+        return email;
     }
 
     // Book room response
