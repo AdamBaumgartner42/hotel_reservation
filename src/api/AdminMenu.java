@@ -127,6 +127,7 @@ public class AdminMenu {
 
             // Variables
             String roomNumber = null;
+            String roomPriceRaw = null;
             Double roomPrice = null;
             int roomTypeInput;
             RoomType roomType = null;
@@ -142,25 +143,30 @@ public class AdminMenu {
             // Input Price Per Night
             inputValid = false;
             while (!inputValid){
-                roomPrice = requestRoomPrice();
-                inputValid = checkRoomPrice(roomPrice);
+                roomPriceRaw = requestRoomPrice();
+                inputValid = checkRoomPrice(roomPriceRaw);
+                if(inputValid){
+                    roomPrice = Double.parseDouble(roomPriceRaw);
+                }
             }
 
             // Input Room Type
             inputValid = false;
             while (!inputValid){
-                int _roomTypeInput = requestRoomTypeInput();
+                String _roomTypeInput = requestRoomTypeInput();
                 inputValid = checkRoomType(_roomTypeInput);
                 if (inputValid){
-                    roomType = intToRoomType(_roomTypeInput);
+                    int roomTypeInt = Integer.parseInt(_roomTypeInput);
+                    roomType = intToRoomType(roomTypeInt);
                 }
             }
+
+            // Create new room and add to list
             IRoom tempRoom = new Room(roomNumber, roomPrice, roomType);
             roomList.add(tempRoom);
 
             // Request another Room Response
             // Check another Room Response
-
             inputValid = false;
             while (!inputValid){
                 anotherRoomResponse = requestAnotherRoomResponse();
@@ -186,16 +192,18 @@ public class AdminMenu {
         return scanner.nextLine();
     }
 
-    public Double requestRoomPrice(){
+    public String requestRoomPrice(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter room price per night");
-        return Double.parseDouble(scanner.nextLine());
+        return scanner.nextLine();
     }
 
-    public int requestRoomTypeInput(){
+
+
+    public String requestRoomTypeInput(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter room type: 1 for single bed, 2 for double bed");
-        return Integer.parseInt(scanner.nextLine());
+        return scanner.nextLine();
     }
 
     public String requestAnotherRoomResponse(){
@@ -205,11 +213,21 @@ public class AdminMenu {
     }
 
     public boolean checkRoomNumber(String roomNumber){
+
         // ToDo: Check if room number already exists
 
-        int roomInt = Integer.parseInt(roomNumber);
+        // Confirm string roomNumber is a valid number
+        int roomInt = 0;
+        try {
+            roomInt = Integer.parseInt(roomNumber);
+        } catch (NumberFormatException ex){
+            //System.out.println(ex.getLocalizedMessage());
+            System.out.println("Invalid Input: Room Number must be an integer");
+            return false;
+        }
+
         if(roomInt < 0){
-            System.out.println("Room Number must be positive number");
+            System.out.println("Room Number must be positive integer");
             return false;
         } else if (roomInt > 10000){
             System.out.println("Room Number must be at or below 10,000");
@@ -219,14 +237,32 @@ public class AdminMenu {
         }
     }
 
-    public boolean checkRoomPrice(Double roomPrice){
+
+    public boolean checkRoomPrice(String roomPriceRaw){
+
+        // Confirm valid double
+        try {
+            Double.parseDouble(roomPriceRaw);
+        } catch (NumberFormatException ex){
+            //System.out.println(ex.getLocalizedMessage());
+            System.out.println("Invalid Input: Room Price should be a double");
+            return false;
+        }
+
         return true;
     }
 
-    public boolean checkRoomType(int roomTypeInput){
+    public boolean checkRoomType(String roomTypeInput){
+        int _input = 0;
+        try{
+            _input = Integer.parseInt(roomTypeInput);
+        } catch (NumberFormatException ex){
+            System.out.println("Invalid Input");
+            return false;
+        }
 
-        if (!(roomTypeInput == 1 || roomTypeInput == 2)){
-            System.out.println(roomTypeInput + " is not recognized");
+        if (!( _input == 1 || _input == 2)){
+            System.out.println(_input + " is not recognized");
             return false;
         } else {
             return true;
