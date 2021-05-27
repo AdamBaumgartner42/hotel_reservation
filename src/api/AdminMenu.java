@@ -214,8 +214,6 @@ public class AdminMenu {
 
     public boolean checkRoomNumber(String roomNumber){
 
-        // ToDo: Check if room number already exists
-
         // Confirm string roomNumber is a valid number
         int roomInt = 0;
         try {

@@ -146,8 +146,17 @@ public class MainMenu {
                     System.out.println(_newReservation);
                 }
                 case 2 -> {
-                    System.out.println("Enter customer email to search for reservations");
-                    viewCustomerReservations(getScannerEmail());
+
+                    validInput = false;
+                    while(!validInput){
+                        String _customerEmail = requestCustomerEmail();
+                        validInput = checkEmail(_customerEmail);
+                        if (validInput){
+                            viewCustomerReservations(_customerEmail);
+                        }
+                    }
+//                    System.out.println("Enter customer email to search for reservations");
+//                    viewCustomerReservations(getScannerEmail());
                 }
                 case 3 -> createAccount();
                 case 4 -> adminMenu();
@@ -220,11 +229,21 @@ public class MainMenu {
         HotelResource hs = HotelResource.getInstance();
         Collection<Reservation> personReservations = hs.getCustomersReservations(customerEmail);
 
+        if (personReservations.size() == 0){
+            System.out.println("No Reservations found for " + customerEmail);
+        }
+
         Iterator <Reservation> iterator = personReservations.iterator();
         while (iterator.hasNext()){
             System.out.println(iterator.next() + "\n");
         }
 
+    }
+
+    public String requestCustomerEmail(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("Enter customer email to search for reservations");
+        return scanner.nextLine();
     }
 
     public void createAccount(){
