@@ -45,6 +45,8 @@ public class MainMenu {
                     Date checkOutDate = null;
 
                     // Find Available Rooms
+
+                    // CheckIn Date
                     validInput = false;
                     while(!validInput){
                         String _checkInDate = requestCheckInDate();
@@ -54,10 +56,15 @@ public class MainMenu {
                         }
                     }
 
+                    // CheckOut Date
                     validInput = false;
                     while(!validInput){
-                        checkOutDate = requestCheckOutDate();
-                        validInput = checkCheckOutDate(checkInDate, checkOutDate);
+                        String _checkOutDate = requestCheckOutDate();
+                        //checkOutDate = requestCheckOutDate();
+                        validInput = checkCheckOutDate(checkInDate, _checkOutDate);
+                        if(validInput){
+                            checkOutDate = parseDate(_checkOutDate);
+                        }
                     }
 
                     // Display available rooms
@@ -116,20 +123,23 @@ public class MainMenu {
                             // No: Customer account Does Not Exist
                         if((res.equals("n") || res.equals("N")) && validInput){
                             customerEmail = createAccountReturnEmail(); // probably could use inheritance
-                        } else {
-                            // Yes: Customer account already Exists
+                        }
+                        if ((res.equals("y") || res.equals("Y") && validInput)){
                             System.out.println("Please enter your account email"); // repetitive for new acct folks
                             customerEmail = getScannerEmail();
                         }
                     }
 
-//                    // Customer Email Request
-//                    System.out.println("Please enter your account email"); // repetitive for new acct folks
-//                    customerEmail = getScannerEmail();
 
-                    // Get book requested room
-                    System.out.println("Which room would you like?");
-                    roomNumber = getScannerRoom();
+                    // Room Selection
+                    validInput = false;
+                    while(!validInput){
+                        String _roomSelection = requestRoomSelection();
+                        validInput = checkRoomSelection(_roomSelection);
+                        if(validInput){
+                            roomNumber = _roomSelection;
+                        }
+                    }
 
                     // Book reservation
                     Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
@@ -212,7 +222,7 @@ public class MainMenu {
 
         Iterator <Reservation> iterator = personReservations.iterator();
         while (iterator.hasNext()){
-            System.out.println(iterator.next());
+            System.out.println(iterator.next() + "\n");
         }
 
     }
@@ -279,6 +289,7 @@ public class MainMenu {
         return email;
     }
 
+
     // Book room response
     public String requestBookRoomResponse(){
         Scanner scanner = new Scanner(System.in);
@@ -313,7 +324,22 @@ public class MainMenu {
         }
     }
 
+// Request Room Number
+    public String requestRoomSelection(){
+        Scanner scanner = new Scanner(System.in);
+        System.out.println("What room would you like?");
+        return scanner.nextLine();
+    }
 
+    public boolean checkRoomSelection(String roomSelection){
+        HotelResource hs = HotelResource.getInstance();
+        if(hs.roomExists(roomSelection)){
+            return true;
+        } else {
+            System.out.println(roomSelection + " is not a room at this hotel");
+            return false;
+        }
+    }
 
 
 // CheckIn Date
@@ -352,14 +378,22 @@ public class MainMenu {
     }
 
 // CheckOut Date
-    public Date requestCheckOutDate(){
+    public String requestCheckOutDate(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Enter CheckOut Date mm/dd/yyyy example 06/21/2021");
-        return getScannerDate();
+        return scanner.nextLine();
     }
 
-    public boolean checkCheckOutDate(Date checkInDate, Date checkOutDate){
-        if(checkOutDate.before(checkInDate)){
+    public boolean checkCheckOutDate(Date checkInDate, String input){
+        Date _checkOutDate = null;
+        try{
+            _checkOutDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
+        } catch (ParseException ex) {
+            System.out.println("Invalid Input");
+            return false;
+        }
+
+        if(_checkOutDate.before(checkInDate)){
             System.out.println("CheckOut Date must be after CheckIn Date: " + checkInDate);
             return false;
         }

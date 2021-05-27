@@ -4,6 +4,8 @@ import java.util.*;
 import model.*;
 import service.*;
 
+import static api.CollectionResource.RESERVATION_COLLECTION;
+
 public class HotelResource {
     /* --- HotelResource Class - Static Reference -- */
     private static HotelResource hotelResourceInstance;
@@ -52,5 +54,16 @@ public class HotelResource {
     public Collection<IRoom> findARoom(Date checkIn, Date checkOut){
 
         return reservationService.findRooms(checkIn, checkOut);
+    }
+
+    public boolean roomExists(String roomNumber){
+        ArrayList<IRoom> _RoomList = new ArrayList<>(reservationService.getAllRooms());
+        for (int i = 0; i < _RoomList.size(); i++){
+            if(roomNumber.equals(_RoomList.get(i).getRoomNumber())){
+                return true;
+            }
+        }
+        // fallthrough
+        return false;
     }
 }
