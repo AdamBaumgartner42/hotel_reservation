@@ -47,8 +47,11 @@ public class MainMenu {
                     // Find Available Rooms
                     validInput = false;
                     while(!validInput){
-                        checkInDate = requestCheckInDate();
-                        validInput = checkCheckInDate(checkInDate);
+                        String _checkInDate = requestCheckInDate();
+                        validInput = checkCheckInDate(_checkInDate);
+                        if (validInput){
+                            checkInDate = parseDate(_checkInDate);
+                        }
                     }
 
                     validInput = false;
@@ -203,7 +206,7 @@ public class MainMenu {
 
 // Viewing Reservations
 
-    public Collection<Reservation> viewCustomerReservations(String customerEmail){
+    public void viewCustomerReservations(String customerEmail){
         HotelResource hs = HotelResource.getInstance();
         Collection<Reservation> personReservations = hs.getCustomersReservations(customerEmail);
 
@@ -211,8 +214,6 @@ public class MainMenu {
         while (iterator.hasNext()){
             System.out.println(iterator.next());
         }
-
-        return personReservations;
 
     }
 
@@ -316,24 +317,44 @@ public class MainMenu {
 
 
 // CheckIn Date
-    public Date requestCheckInDate(){
+    public String requestCheckInDate(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter CheckIn Date mm/dd/yyyy example 02/01/2020");
-        return getScannerDate();
+        System.out.println("Enter CheckIn Date mm/dd/yyyy example 06/01/2021");
+        return scanner.nextLine();
+        //return getScannerDate();
     }
 
-    public boolean checkCheckInDate(Date checkInDate){
-        if(checkInDate.before(new java.util.Date())){
-            System.out.println(checkInDate + " is already in the past");
+    public boolean checkCheckInDate(String input){
+        Date _checkInDate = null;
+        try{
+            _checkInDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
+        } catch (ParseException ex) {
+            System.out.println("Invalid Input");
+            return false;
+        }
+
+
+        if(_checkInDate.before(new java.util.Date())){
+            System.out.println(_checkInDate + " is already in the past");
             return false;
         }
         return true;
     }
 
+    public Date parseDate(String input){
+        Date _checkInDate = null;
+        try {
+            _checkInDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
+        } catch (ParseException ex) {
+            System.out.println(ex.getLocalizedMessage());
+        }
+        return _checkInDate;
+    }
+
 // CheckOut Date
     public Date requestCheckOutDate(){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter CheckOut Date mm/dd/yyyy example 02/21/2020");
+        System.out.println("Enter CheckOut Date mm/dd/yyyy example 06/21/2021");
         return getScannerDate();
     }
 
