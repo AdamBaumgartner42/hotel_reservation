@@ -224,15 +224,15 @@ public class AdminMenu {
             return false;
         }
 
-        if(roomInt < 0){
-            System.out.println("Room Number must be positive integer");
+        // Confirm that the room number does not already exist
+        HotelResource hr = HotelResource.getInstance();
+        if(hr.roomExists(roomNumber)){
+            System.out.println(roomNumber + " already exists, use a different number");
             return false;
-        } else if (roomInt > 10000){
-            System.out.println("Room Number must be at or below 10,000");
-            return false;
-        } else {
-            return true;
         }
+
+        // fallthrough
+        return true;
     }
 
 

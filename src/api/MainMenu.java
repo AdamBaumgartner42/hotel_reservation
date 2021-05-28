@@ -60,7 +60,6 @@ public class MainMenu {
                     validInput = false;
                     while(!validInput){
                         String _checkOutDate = requestCheckOutDate();
-                        //checkOutDate = requestCheckOutDate();
                         validInput = checkCheckOutDate(checkInDate, _checkOutDate);
                         if(validInput){
                             checkOutDate = parseDate(_checkOutDate);
@@ -135,13 +134,19 @@ public class MainMenu {
                     validInput = false;
                     while(!validInput){
                         String _roomSelection = requestRoomSelection();
-                        validInput = checkRoomSelection(_roomSelection);
+                        validInput = checkRoomSelection(_roomSelection, checkInDate, checkOutDate);
                         if(validInput){
                             roomNumber = _roomSelection;
                         }
                     }
 
                     // Book reservation
+
+                    // check that this reservation does not already exist.
+
+
+
+
                     Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
                     System.out.println(_newReservation);
                 }
@@ -233,7 +238,7 @@ public class MainMenu {
             System.out.println("No Reservations found for " + customerEmail);
         }
 
-        Iterator <Reservation> iterator = personReservations.iterator();
+         Iterator <Reservation> iterator = personReservations.iterator();
         while (iterator.hasNext()){
             System.out.println(iterator.next() + "\n");
         }
@@ -256,6 +261,7 @@ public class MainMenu {
         while (!inputValid){
             email = requestEmail();
             inputValid = checkEmail(email);
+            inputValid = checkEmailExists(email);
         }
 
         // First Name
@@ -286,6 +292,7 @@ public class MainMenu {
         while (!inputValid){
             email = requestEmail();
             inputValid = checkEmail(email);
+            inputValid = checkEmailExists(email);
         }
 
         // First Name
@@ -350,14 +357,25 @@ public class MainMenu {
         return scanner.nextLine();
     }
 
-    public boolean checkRoomSelection(String roomSelection){
-        HotelResource hs = HotelResource.getInstance();
-        if(hs.roomExists(roomSelection)){
-            return true;
-        } else {
+    public boolean checkRoomSelection(String roomSelection, Date checkInDate, Date checkOutDate){
+        HotelResource hr = HotelResource.getInstance();
+        if(!hr.roomExists(roomSelection)) {
             System.out.println(roomSelection + " is not a room at this hotel");
             return false;
         }
+
+        // check if there is already a reservation
+        ArrayList<IRoom> _openRooms = new ArrayList<>(hr.findARoom(checkInDate, checkOutDate));
+
+        for (int i = 0; i < _openRooms.size(); i++){
+            if (roomSelection.equals(_openRooms.get(i).getRoomNumber())) {
+                return true;
+            }
+        }
+        // fallthrough
+        System.out.println(roomSelection + " already has a reservation, try another room");
+        return false;
+
     }
 
 
@@ -437,7 +455,21 @@ public class MainMenu {
         }
     }
 
-    // Check for Email in service
+    public boolean checkEmailExists(String email){
+        AdminResource ar = AdminResource.getInstance();
+        ArrayList<Customer> _customerList = new ArrayList<>(ar.getAllCustomers());
+
+
+        for (int i = 0; i < _customerList.size(); i++){
+            if(email.equals(_customerList.get(i).getEmail())){
+                System.out.println(email + " is already used by another account");
+                return false;
+            }
+        }
+
+        // fallthrough
+        return true;
+    }
 
 
 
