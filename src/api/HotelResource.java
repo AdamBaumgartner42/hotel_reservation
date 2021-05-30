@@ -4,7 +4,6 @@ import java.util.*;
 import model.*;
 import service.*;
 
-import static api.CollectionResource.RESERVATION_COLLECTION;
 
 public class HotelResource {
     /* --- HotelResource Class - Static Reference -- */

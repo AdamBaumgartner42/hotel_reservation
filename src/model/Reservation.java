@@ -46,4 +46,16 @@ public class Reservation {
                 + "CheckIn Date: " + dateFormat.format(checkInDate) + "\n"
                 + "CheckOut Date: " + dateFormat.format(checkOutDate);
     }
+
+    // ToDo: Override equals() method
+    @Override
+    public boolean equals(Object o){
+        return true;
+    }
+
+    // ToDo: Override hashCode() method
+    @Override
+    public int hashCode(){
+        return 1234;
+    }
 }

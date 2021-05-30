@@ -4,7 +4,7 @@ import java.util.*;
 import model.*;
 import static api.CollectionResource.*;
 
-public class ReservationService {
+public class ReservationService{
     /* --- ReservationService Class - Static Reference -- */
     private static ReservationService reservationServiceInstance;
     private ReservationService() {}
@@ -83,8 +83,8 @@ public class ReservationService {
         return _CustomerReservationCollection;
     }
 
-
-    public void printAllReservation(){
+    //Todo: default access modifier implementation
+    void printAllReservation(){
         ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
 
         for(int i = 0; i < _ReservationList.size(); i++){

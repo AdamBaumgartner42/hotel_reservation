@@ -130,7 +130,7 @@ public class MainMenu {
                     }
 
 
-                    // Room Selection
+                    // Room Selection + confirm no reservations already
                     validInput = false;
                     while(!validInput){
                         String _roomSelection = requestRoomSelection();
@@ -140,13 +140,8 @@ public class MainMenu {
                         }
                     }
 
-                    // Book reservation
 
-                    // check that this reservation does not already exist.
-
-
-
-
+                    // Add new Reservation to the collection.
                     Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
                     System.out.println(_newReservation);
                 }
@@ -261,7 +256,10 @@ public class MainMenu {
         while (!inputValid){
             email = requestEmail();
             inputValid = checkEmail(email);
-            inputValid = checkEmailExists(email);
+            // ToDo: Fixed Typo -> Incorrect emails are flagged
+            if(inputValid) {
+                inputValid = checkEmailExists(email);
+            }
         }
 
         // First Name
@@ -292,7 +290,9 @@ public class MainMenu {
         while (!inputValid){
             email = requestEmail();
             inputValid = checkEmail(email);
-            inputValid = checkEmailExists(email);
+            if(inputValid) {
+                inputValid = checkEmailExists(email);
+            }
         }
 
         // First Name

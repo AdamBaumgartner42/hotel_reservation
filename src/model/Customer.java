@@ -4,9 +4,10 @@ import java.util.regex.*;
 
 public class Customer {
 
-    protected String firstName;
-    protected String lastName;
-    protected String email;
+    // Todo: Note "final" is added here
+    protected final String firstName;
+    protected final String lastName;
+    protected final String email;
 
     // Constructor
     public Customer (String firstName, String lastName, String email){
