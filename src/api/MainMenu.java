@@ -12,94 +12,25 @@ public class MainMenu {
     public MainMenu(){}
 
     public void startActions(){
-        boolean validInput = false;
-
         while (true){
             switch (getAction()) {
                 case 1 -> {
+                    Date checkIn = getValidDate("Enter CheckIn Date: mm/dd/yyyy");
+                    Date checkOut = getValidDate("Enter CheckOut Date: mm/dd/yyyy", checkIn);
+                    DisplayRooms(checkIn, checkOut, 7);
+
+                    if(!binaryResponse("Would you like to book a room?")){
+                        startActions();
+                    }
+
+                    String customerEmail;
+                    if(binaryResponse("Do you have an account with us?")){ customerEmail = getValidCurrentEmail();}
+                    else { customerEmail = createAccountReturnEmail();}
+
+                    String roomNumber = getValidRoomSelection(checkIn, checkOut, "What room would you like?");
+
                     HotelResource hr = HotelResource.getInstance();
-
-                    Date checkInDate = getValidDate("Enter CheckIn Date mm/dd/yyyy example 07/01/2021");
-                    Date checkOutDate = getValidDate("Enter CheckIn Date mm/dd/yyyy example 06/01/2021", checkInDate);
-
-                    DisplayRooms(checkInDate, checkOutDate, 7);
-
-//                    // Display available rooms
-//                    Collection<IRoom> _openRooms = hr.findARoom(checkInDate, checkOutDate);
-//                    System.out.println("Available Rooms:");
-//                    for (IRoom openRoom : _openRooms) {
-//                        System.out.println(openRoom);
-//                    }
-//                    if(_openRooms.size() == 0) {
-//                        System.out.println("no rooms in original range");
-//                        // Try again with +7 days
-//                        Calendar cal = Calendar.getInstance();
-//
-//                        // Update checkInDate
-//                        cal.setTime(checkInDate);
-//                        cal.add(Calendar.DATE, 7);
-//                        checkInDate = cal.getTime();
-//
-//                        // Update checkOutDate
-//                        cal.setTime(checkOutDate);
-//                        cal.add(Calendar.DATE, 7);
-//                        checkOutDate = cal.getTime();
-//
-//                        _openRooms = hr.findARoom(checkInDate, checkOutDate);
-//                        System.out.println("Available Rooms + 7 days:");
-//                        for (IRoom openRoom : _openRooms) {
-//                            System.out.println(openRoom);
-//                        }
-//                        if (_openRooms.size() == 0) {
-//                            System.out.println("no rooms in +7 day range");
-//                            startActions(); // exit back to main menu
-//                        }
-//                    }
-
-
-                    // Book a room - y/n
-                    validInput = false;
-                    while(!validInput){
-                        String res = requestBookRoomResponse();
-                        validInput = checkRequestBookRoomResponse(res);
-                        if((res.equals("n") || res.equals("N")) && validInput){
-                            startActions(); // go back to MainMenu()
-                        }
-                    }
-
-                    // Variables
-                    String customerEmail = null;
-                    String roomNumber = null;
-
-
-                    // Existing account - y/n
-                    validInput = false;
-                    while(!validInput){
-                        String res = requestCurrentAccount();
-                        validInput = checkRequestCurrentAccount(res);
-                            // No: Customer account Does Not Exist
-                        if((res.equals("n") || res.equals("N")) && validInput){
-                            customerEmail = createAccountReturnEmail();
-                        }
-                        if ((res.equals("y") || res.equals("Y") && validInput)){
-                            System.out.println("Please enter your account email"); // repetitive for new acct folks
-                            customerEmail = getValidNewEmail();
-                        }
-                    }
-
-
-                    // Room Selection + confirm no reservations already
-                    validInput = false;
-                    while(!validInput){
-                        String _roomSelection = requestRoomSelection();
-                        validInput = checkRoomSelection(_roomSelection, checkInDate, checkOutDate);
-                        if(validInput){
-                            roomNumber = _roomSelection;
-                        }
-                    }
-
-                    // Add new Reservation to the collection.
-                    Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkInDate, checkOutDate);
+                    Reservation _newReservation = hr.bookARoom(customerEmail, hr.getRoom(roomNumber), checkIn, checkOut);
                     System.out.println(_newReservation);
                 }
                 case 2 -> viewCustomerReservations(getValidEmail());
@@ -123,11 +54,6 @@ public class MainMenu {
                 + "Please select a number for the menu option");
     }
 
-    public String getActionString(){
-        Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
-
     public int getAction(){
         splashScreen();
         Scanner scanner = new Scanner(System.in);
@@ -149,7 +75,6 @@ public class MainMenu {
     }
 
 // Viewing Reservations
-
     public void viewCustomerReservations(String customerEmail){
         HotelResource hs = HotelResource.getInstance();
         Collection<Reservation> personReservations = hs.getCustomersReservations(customerEmail);
@@ -165,12 +90,6 @@ public class MainMenu {
 
     }
 
-    public String requestCustomerEmail(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter customer email to search for reservations");
-        return scanner.nextLine();
-    }
-
     public void createAccount(){
         HotelResource hs = HotelResource.getInstance();
         hs.createACustomer(getValidNewEmail(), getValidName("First Name"), getValidName("Last Name"));
@@ -184,39 +103,16 @@ public class MainMenu {
         return email;
     }
 
-
-    // Book room response
-    public String requestBookRoomResponse(){
+    public boolean binaryResponse(String msg){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("Would you like to book a room y/n");
-        return scanner.nextLine();
-    }
-
-    public boolean checkRequestBookRoomResponse(String response){
-        if(response.equals("y") || response.equals("Y") ||
-           response.equals("n") || response.equals("N")){
-            return true;
-        } else {
-            System.out.println("Options are y or n");
-            return false;
+        while(true){
+            System.out.println(msg + " y or n");
+            String res = scanner.nextLine();
+            if(res.equals("y") || res.equals("Y")){ return true;}
+            if(res.equals("n") || res.equals("N")){ return false;}
+            System.out.println("Invalid Input: options are y or n");
         }
-    }
 
-    // Existing Account response
-    public String requestCurrentAccount(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Do you have an account with us? y/n");
-        return scanner.nextLine();
-    }
-
-    public boolean checkRequestCurrentAccount (String response){
-        if(response.equals("y") || response.equals("Y") ||
-                response.equals("n") || response.equals("N")){
-            return true;
-        } else {
-            System.out.println("Options are y or n");
-            return false;
-        }
     }
 
     public void DisplayRooms(Date checkIn, Date checkOut, int retryDays){
@@ -255,19 +151,21 @@ public class MainMenu {
         return cal.getTime();
     }
 
-    //DisplayRooms(checkInDate, checkOutDate, 7);
-
-    // Display available rooms
-
-
-
 
 // Request Room Number
-    public String requestRoomSelection(){
+    public String getValidRoomSelection(Date checkIn, Date checkOut, String msg){
         Scanner scanner = new Scanner(System.in);
-        System.out.println("What room would you like?");
-        return scanner.nextLine();
+        String roomNumber = null;
+        boolean validInput = false;
+        while(!validInput){
+            System.out.println(msg);
+            roomNumber = scanner.nextLine();
+            if(!checkRoomSelection(roomNumber, checkIn, checkOut)){ continue;}
+            validInput = true;
+        }
+        return roomNumber;
     }
+
 
     public boolean checkRoomSelection(String roomSelection, Date checkInDate, Date checkOutDate){
         HotelResource hr = HotelResource.getInstance();
@@ -335,65 +233,6 @@ public class MainMenu {
         return date;
     }
 
-// CheckIn Date
-    public String requestCheckInDate(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter CheckIn Date mm/dd/yyyy example 06/01/2021");
-        return scanner.nextLine();
-    }
-
-    public boolean checkCheckInDate(String input){
-        Date _checkInDate = null;
-        try{
-            _checkInDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
-        } catch (ParseException ex) {
-            System.out.println("Invalid Input");
-            return false;
-        }
-
-
-        if(_checkInDate.before(new java.util.Date())){
-            System.out.println(_checkInDate + " is already in the past");
-            return false;
-        }
-        return true;
-    }
-
-    public Date parseDate(String input){
-        Date _checkInDate = null;
-        try {
-            _checkInDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
-        } catch (ParseException ex) {
-            System.out.println(ex.getLocalizedMessage());
-        }
-        return _checkInDate;
-    }
-
-// CheckOut Date
-    public String requestCheckOutDate(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Enter CheckOut Date mm/dd/yyyy example 06/21/2021");
-        return scanner.nextLine();
-    }
-
-    public boolean checkCheckOutDate(Date checkInDate, String input){
-        Date _checkOutDate = null;
-        try{
-            _checkOutDate = new SimpleDateFormat("MM/dd/yyyy").parse(input);
-        } catch (ParseException ex) {
-            System.out.println("Invalid Input");
-            return false;
-        }
-
-        if(_checkOutDate.before(checkInDate)){
-            System.out.println("CheckOut Date must be after CheckIn Date: " + checkInDate);
-            return false;
-        }
-        return true;
-    }
-
-
-
 // Email
     public String getValidNewEmail (){
         String email = null;
@@ -401,10 +240,32 @@ public class MainMenu {
         Scanner scanner = new Scanner(System.in);
 
         while(!validInput){
-            System.out.println("Enter Email format: name@domain.com");
+            System.out.println("Enter email format: name@domain.com");
             email = scanner.nextLine();
             if (!checkEmail(email)){ continue; }
-            if (!checkEmailExists(email)){ continue; }
+            if (checkEmailExists(email)){
+                System.out.println(email + " is already used by another account");
+                continue;
+            }
+            validInput = true;
+        }
+        return email;
+    }
+
+    public String getValidCurrentEmail (){
+        String email = null;
+        boolean validInput = false;
+        Scanner scanner = new Scanner(System.in);
+
+        while(!validInput){
+            System.out.println("Enter existing account email: name@domain.com");
+            email = scanner.nextLine();
+            if (!checkEmail(email)){ continue; }
+            if (!checkEmailExists(email)){
+                System.out.println("email not on file, try again and create an account");
+                continue;
+            }
+
             validInput = true;
         }
         return email;
@@ -425,8 +286,9 @@ public class MainMenu {
     }
 
     public boolean checkEmail(String email){
-        if(Pattern.matches("^(.+)@(.+)\\.(.+)$", email)){ return true; }
-        else {
+        if(Pattern.matches("^(.+)@(.+)\\.(.+)$", email)){
+            return true;
+        } else {
             System.out.println(email + " is incorrect. format: name@domain.com");
             return false;
         }
@@ -438,13 +300,11 @@ public class MainMenu {
 
         for (int i = 0; i < _customerList.size(); i++){
             if(email.equals(_customerList.get(i).getEmail())){
-                System.out.println(email + " is already used by another account");
-                return false;
+                return true;
             }
         }
         return false;
     }
-
 
 
 // Name
