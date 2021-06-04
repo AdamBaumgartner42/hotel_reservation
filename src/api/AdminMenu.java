@@ -19,18 +19,7 @@ public class AdminMenu {
     public void startActions(){
         boolean keepRunning = true;
         while(keepRunning){
-            splashScreen();
-            String actionString = null;
-            int action = 0;
-            boolean validInput = false;
-            while (!validInput){
-                actionString = getActionString();
-                validInput = checkGetAction(actionString, 1, 6);
-                if(validInput){
-                    action = Integer.parseInt(actionString);
-                }
-            }
-            switch (action) {
+            switch (getAction()) {
                 case 1 -> seeAllCustomers();
                 case 2 -> seeAllRooms();
                 case 3 -> seeAllReservations();
@@ -44,6 +33,7 @@ public class AdminMenu {
                     mainMenu();
                     keepRunning = false;
                 }
+                default -> System.out.println("Invalid choice");
             }
         }
     }
@@ -61,24 +51,25 @@ public class AdminMenu {
                 + "Please select a number for the menu option");
     }
 
-//    public int getAction(){
-//        Scanner scanner = new Scanner(System.in);
-//        return Integer.parseInt(scanner.nextLine());
-//    }
 
-    public String getActionString(){
+    public int getAction(){
+        splashScreen();
         Scanner scanner = new Scanner(System.in);
-        return scanner.nextLine();
-    }
+        boolean validInput = false;
+        String actionString;
+        int action = 0;
 
-    public boolean checkGetAction(String action, int low, int high){
-        if(action.equals("1") || action.equals("2") || action.equals("3") ||
-                action.equals("4") || action.equals("5") || action.equals("6")) {
-            return true;
-        } else {
-            System.out.println("Invalid Input: Must be between " + low + " and " + high);
-            return false;
+        while(!validInput){
+            actionString = scanner.nextLine();
+            try {
+                action = Integer.parseInt(actionString);
+            } catch(NumberFormatException ex){
+                System.out.println("Invalid Input: must be an integer");
+                continue;
+            }
+            validInput = true;
         }
+        return action;
     }
 
 // See all Customers

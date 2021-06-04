@@ -1,0 +1,39 @@
+Example for room reservation in Main Menu
+
+---> Think about the task in normal human terms. <--- 
+
+"Find and Reserve a Room"
+
+Return valid  Check In date
+Return valid  Check Out date
+
+Return availiable rooms for that range
+
+Main Menu logic: no rooms-> go 7 days in future and try again.
+
+Return valid Check In Date incremented by number of days
+Return valid Check Out Date incremented by number of days
+
+Return available rooms for that range 
+
+--
+Could this input comming from the user be forming its own object? 
+A pendingReservation object? 
+
+After being given the input dates, it could populate the two lists.
+
+I can then return an object to the Main menu. pendingReserve.firstDates, pendingReserve.laterDates.
+
+...
+API functions: (thoughts)
+dateValidator(Date)
+dateIncrementer(Date, increment)
+roomsAvailible(CheckIn, CheckOut)
+
+
+
+
+
+
+
+
