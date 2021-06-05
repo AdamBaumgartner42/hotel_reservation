@@ -15,7 +15,8 @@ public class CollectionResource {
     /* --- RESERVATION_COLLECTION - Static Reference --- */
     public static final Collection<Reservation> RESERVATION_COLLECTION;
     static{
-        RESERVATION_COLLECTION = new ArrayList<>();
+        //RESERVATION_COLLECTION = new ArrayList<>();
+        RESERVATION_COLLECTION = new HashSet<>();
     }
 
     /* --- IROOM_COLLECTION - Static Reference --- */

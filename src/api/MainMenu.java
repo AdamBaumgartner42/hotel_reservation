@@ -76,8 +76,8 @@ public class MainMenu {
 
 // Viewing Reservations
     public void viewCustomerReservations(String customerEmail){
-        HotelResource hs = HotelResource.getInstance();
-        Collection<Reservation> personReservations = hs.getCustomersReservations(customerEmail);
+        HotelResource hr = HotelResource.getInstance();
+        Collection<Reservation> personReservations = hr.getCustomersReservations(customerEmail);
 
         if (personReservations.size() == 0){
             System.out.println("No Reservations found for " + customerEmail);
@@ -91,14 +91,14 @@ public class MainMenu {
     }
 
     public void createAccount(){
-        HotelResource hs = HotelResource.getInstance();
-        hs.createACustomer(getValidNewEmail(), getValidName("First Name"), getValidName("Last Name"));
+        HotelResource hr = HotelResource.getInstance();
+        hr.createACustomer(getValidNewEmail(), getValidName("First Name"), getValidName("Last Name"));
     }
 
     public String createAccountReturnEmail(){
-        HotelResource hs = HotelResource.getInstance();
+        HotelResource hr = HotelResource.getInstance();
         String email = getValidNewEmail();
-        hs.createACustomer(email, getValidName("First Name"), getValidName("Last Name"));
+        hr.createACustomer(email, getValidName("First Name"), getValidName("Last Name"));
 
         return email;
     }
@@ -224,7 +224,7 @@ public class MainMenu {
                 System.out.println("Invalid Input");
                 continue;
             }
-            if(date.before(firstDate)){
+            if(date.before(firstDate) || date.equals(firstDate)){
                 System.out.println("Must be after " + firstDate);
                 continue;
             }

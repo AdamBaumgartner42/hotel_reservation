@@ -35,6 +35,12 @@ public class CustomerService {
         return CUSTOMER_COLLECTION;
     }
 
+    // Implementation of default method
+    public int getCustomerReservationCount(Customer customer){
+        ReservationService rs = ReservationService.getInstance();
+        return rs.getCustomerReservationCount(customer);
+    }
+
 
 }
 

@@ -2,31 +2,32 @@ package model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Objects;
 
 public class Reservation {
 
     protected Customer customer;
     protected IRoom room;
-    protected Date checkInDate;
-    protected Date checkOutDate;
+    protected Date checkIn;
+    protected Date checkOut;
 
     // Constructor
     public Reservation(Customer customer, IRoom room, Date checkInDate,
                        Date checkOutDate){
         this.customer = customer;
         this.room = room;
-        this.checkInDate = checkInDate;
-        this.checkOutDate = checkOutDate;
+        this.checkIn = checkInDate;
+        this.checkOut = checkOutDate;
     }
 
     public Customer getCustomer(){
         return customer;
     }
 
-    public Date getCheckInDate(){ return checkInDate;}
+    public Date getCheckInDate(){ return checkIn;}
 
     public Date getCheckOutDate(){
-        return checkOutDate;
+        return checkOut;
     }
 
     public IRoom getRoom(){
@@ -43,19 +44,23 @@ public class Reservation {
                 + " " + customer.getLastName() + "\n"
                 + "Room: " + room.getRoomNumber() + " - " + room.getRoomTypeText() + "\n"
                 + "Price: " + "$" + room.getRoomPrice() + " price per night \n"
-                + "CheckIn Date: " + dateFormat.format(checkInDate) + "\n"
-                + "CheckOut Date: " + dateFormat.format(checkOutDate);
+                + "CheckIn Date: " + dateFormat.format(checkIn) + "\n"
+                + "CheckOut Date: " + dateFormat.format(checkOut);
     }
 
-    // ToDo: Override equals() method
     @Override
-    public boolean equals(Object o){
-        return true;
+    public boolean equals(Object o) {
+        if (o == this)
+            return true;
+        if (!(o instanceof Reservation res))
+            return false;
+        return res.room.equals(room) &&
+                res.checkIn.equals(checkIn) &&
+                res.checkOut.equals(checkOut);
     }
 
-    // ToDo: Override hashCode() method
     @Override
     public int hashCode(){
-        return 1234;
+        return Objects.hash(room, checkIn, checkOut);
     }
 }

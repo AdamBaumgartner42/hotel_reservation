@@ -44,56 +44,53 @@ public class ReservationService{
         return _newReservation;
     }
 
-    public Collection<IRoom> findRooms(Date checkInDate, Date checkOutDate){
-        // Array init
-        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
+    public Collection<IRoom> findRooms(Date checkIn, Date checkOut){
+        HashSet<Reservation> _ReservationList = new HashSet<>(RESERVATION_COLLECTION);
         ArrayList<IRoom> _AvailableRoomList = new ArrayList<>(IROOM_COLLECTION);
         ArrayList<IRoom> _BookedRooms = new ArrayList<>();
 
-        // For Loop to identify which rooms have interference with planned date
-        for (int i = 0; i < _ReservationList.size(); i++){
-            // Flag incorrect rooms:
-            if(checkInDate.before(_ReservationList.get(i).getCheckOutDate()) &&
-                (checkOutDate.after(_ReservationList.get(i).getCheckInDate())))
-            {
-                _BookedRooms.add(_ReservationList.get(i).getRoom());
+        // Identify which rooms have interference with planned date
+        for(Reservation val : _ReservationList){
+            if(checkIn.before(val.getCheckOutDate()) &&
+              (checkOut.after(val.getCheckInDate()))) {
+                _BookedRooms.add(val.getRoom());
             }
         }
 
-        // For Loop to remove those _BookedRooms from the list of all Rooms
-        for(int i = 0; i < _BookedRooms.size(); i++){
-            if(_AvailableRoomList.contains(_BookedRooms.get(i))){
-                _AvailableRoomList.remove(_BookedRooms.get(i));
-            }
+        // Remove those _BookedRooms from the list of all Rooms
+        for (IRoom bookedRoom : _BookedRooms) {
+            _AvailableRoomList.remove(bookedRoom);
         }
-
         return _AvailableRoomList;
     }
 
     public Collection<Reservation> getCustomersReservation(Customer customer){
-        Collection<Reservation> _CustomerReservationCollection = new ArrayList<>();
+        HashSet<Reservation> _reservations = new HashSet<>(RESERVATION_COLLECTION);
+        Collection<Reservation> _CustomerReservationCollection = new HashSet<>();
 
-        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
-
-        for(int i = 0; i < _ReservationList.size(); i++){
-            if(_ReservationList.get(i).getCustomer() == customer){
-                _CustomerReservationCollection.add(_ReservationList.get(i));
+        for(Reservation res : _reservations){
+            if(res.getCustomer().equals(customer)){
+                _CustomerReservationCollection.add(res);
             }
         }
+
         return _CustomerReservationCollection;
-    }
-
-    //Todo: default access modifier implementation
-    void printAllReservation(){
-        ArrayList<Reservation> _ReservationList = new ArrayList<>(RESERVATION_COLLECTION);
-
-        for(int i = 0; i < _ReservationList.size(); i++){
-            System.out.println(_ReservationList.get(i));
-        }
     }
 
     public Collection<Reservation> getAllReservations(){
         return RESERVATION_COLLECTION;
+    }
+
+    // default access modifier (aka "blank") example
+    int getCustomerReservationCount(Customer customer){
+        HashSet<Reservation> _reservations = new HashSet<>(RESERVATION_COLLECTION);
+        int resCount = 0;
+        for(Reservation val : _reservations){
+            if(val.getCustomer().equals(customer)){
+                resCount++;
+            }
+        }
+        return resCount;
     }
 
 }
